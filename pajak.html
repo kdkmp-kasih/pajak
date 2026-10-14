@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projek Pajak - Neraca & Laba Rugi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#f6f7f9] min-h-screen">
+<div class="max-w-5xl mx-auto p-4 space-y-4">
+<div class="bg-white rounded-2xl shadow p-4 flex justify-between items-center">
+<h1 class="font-bold text-lg">PAJAK - Neraca & Laba Rugi</h1>
+<span class="text-xs bg-black text-white px-3 py-1 rounded-full">Usaha & Pribadi</span>
+</div>
+
+<div class="bg-white rounded-2xl shadow p-2 flex gap-2">
+<button data-tab="1" class="tabBtn flex-1 py-2.5 rounded-xl bg-black text-white font-semibold text-sm">Laba Rugi</button>
+<button data-tab="2" class="tabBtn flex-1 py-2.5 rounded-xl bg-gray-100 font-semibold text-sm">Neraca</button>
+<button data-tab="3" class="tabBtn flex-1 py-2.5 rounded-xl bg-gray-100 font-semibold text-sm">Pajak</button>
+</div>
+
+<!-- TAB 1 LABA RUGI -->
+<div id="tab1" class="tabPanel">
+<div class="bg-white rounded-2xl shadow p-5">
+<h2 class="font-bold">1. Pendapatan Usaha</h2>
+<div class="grid md:grid-cols-2 gap-2 mt-3 text-sm">
+<input id="pend_jasa" type="number" placeholder="Jasa / Dagang (Rp)" class="border p-2.5 rounded-xl">
+<input id="pend_lain" type="number" placeholder="Pendapatan Lain (Rp)" class="border p-2.5 rounded-xl">
+</div>
+<h2 class="font-bold mt-6">2. Beban / Biaya</h2>
+<div class="grid md:grid-cols-3 gap-2 mt-3 text-sm">
+<input id="beban_kulakan" type="number" placeholder="Kulakan / HPP" class="border p-2.5 rounded-xl">
+<input id="beban_op" type="number" placeholder="Operasional" class="border p-2.5 rounded-xl">
+<input id="beban_gaji" type="number" placeholder="Gaji" class="border p-2.5 rounded-xl">
+<input id="beban_sewa" type="number" placeholder="Sewa" class="border p-2.5 rounded-xl">
+<input id="beban_lain" type="number" placeholder="Lain-lain" class="border p-2.5 rounded-xl">
+</div>
+<button id="btnHitungLaba" class="mt-4 w-full bg-black text-white py-3 rounded-xl font-semibold text-sm">Hitung Laba Rugi</button>
+<div id="hasilLaba" class="mt-4 bg-[#0f172a] text-white rounded-2xl p-4 text-sm hidden"></div>
+<button onclick="copyLaba()" class="mt-3 w-full bg-gray-100 py-2.5 rounded-xl text-xs font-bold">📋 Copy di Bawah - Laba Rugi</button>
+</div>
+</div>
+
+<!-- TAB 2 NERACA -->
+<div id="tab2" class="tabPanel hidden">
+<div class="bg-white rounded-2xl shadow p-5">
+<h2 class="font-bold">Neraca Keuangan</h2>
+<div class="grid md:grid-cols-2 gap-6 mt-4">
+<div><h3 class="font-semibold text-sm">ASET</h3><div class="grid gap-2 mt-2 text-sm"><input id="aset_kas" type="number" placeholder="Kas & Bank" class="border p-2.5 rounded-xl"><input id="aset_piutang" type="number" placeholder="Piutang" class="border p-2.5 rounded-xl"><input id="aset_persediaan" type="number" placeholder="Persediaan" class="border p-2.5 rounded-xl"><input id="aset_tetap" type="number" placeholder="Aset Tetap (Motor/Alat)" class="border p-2.5 rounded-xl"></div></div>
+<div><h3 class="font-semibold text-sm">KEWAJIBAN + MODAL</h3><div class="grid gap-2 mt-2 text-sm"><input id="kew_hutang" type="number" placeholder="Hutang Dagang" class="border p-2.5 rounded-xl"><input id="kew_bank" type="number" placeholder="Hutang Bank" class="border p-2.5 rounded-xl"><input id="modal_awal" type="number" placeholder="Modal Awal" class="border p-2.5 rounded-xl"></div></div>
+</div>
+<button id="btnHitungNeraca" class="mt-4 w-full bg-black text-white py-3 rounded-xl font-semibold text-sm">Hitung Neraca (Balance Check)</button>
+<div id="hasilNeraca" class="mt-4 bg-gray-50 rounded-2xl p-4 text-sm hidden"></div>
+<button onclick="copyNeraca()" class="mt-3 w-full bg-gray-100 py-2.5 rounded-xl text-xs font-bold">📋 Copy di Bawah - Neraca</button>
+</div>
+</div>
+
+<!-- TAB 3 PAJAK -->
+<div id="tab3" class="tabPanel hidden">
+<div class="bg-white rounded-2xl shadow p-5">
+<h2 class="font-bold">Hitung Pajak Usaha & Pribadi</h2>
+<div class="grid md:grid-cols-2 gap-2 mt-3 text-sm">
+<select id="jenisPajak" class="border p-2.5 rounded-xl"><option value="umkm05">UMKM 0.5% PP 23 (omzet <4.8M/tahun)</option><option value="umkm11">PPh Final 11% </option><option value="pribadi">PPh 21 Pribadi (PTKP 54jt)</option><option value="badan">PPh Badan 22%</option></select>
+<input id="omzetPajak" type="number" placeholder="Omzet Bruto / Penghasilan Bruto" class="border p-2.5 rounded-xl">
+</div>
+<button id="btnHitungPajak" class="mt-4 w-full bg-green-600 text-white py-3 rounded-xl font-semibold text-sm">Hitung Pajak</button>
+<div id="hasilPajak" class="mt-4 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm hidden"></div>
+<div class="mt-4 text-xs text-gray-500 bg-gray-50 p-3 rounded-xl">
+<b>Catatan:</b><br>
+• UMKM 0.5% = omzet x 0.5% (jika omzet <4.8M/th)<br>
+• Pribadi PTKP 54jt single, 58.5jt kawin<br>
+• Pajak dihitung otomatis dari Laba Rugi Tab 1
+</div>
+<button onclick="copyPajak()" class="mt-3 w-full bg-gray-100 py-2.5 rounded-xl text-xs font-bold">📋 Copy di Bawah - Pajak</button>
+</div>
+</div>
+
+</div>
+
+<script>
+const LS='pajak_fresh_v1';
+let data=JSON.parse(localStorage.getItem(LS)||'{}');
+function save(){localStorage.setItem(LS,JSON.stringify(data));}
+function tabInit(){document.querySelectorAll('.tabBtn').forEach(b=>{b.onclick=()=>{document.querySelectorAll('.tabBtn').forEach(x=>x.className='tabBtn flex-1 py-2.5 rounded-xl bg-gray-100 font-semibold text-sm');b.className='tabBtn flex-1 py-2.5 rounded-xl bg-black text-white font-semibold text-sm';document.querySelectorAll('.tabPanel').forEach(p=>p.classList.add('hidden'));document.getElementById('tab'+b.dataset.tab).classList.remove('hidden');}})}
+tabInit();
+
+document.getElementById('btnHitungLaba').onclick=()=>{
+ let pend_jasa=parseInt(document.getElementById('pend_jasa').value)||0;
+ let pend_lain=parseInt(document.getElementById('pend_lain').value)||0;
+ let kulakan=parseInt(document.getElementById('beban_kulakan').value)||0;
+ let op=parseInt(document.getElementById('beban_op').value)||0;
+ let gaji=parseInt(document.getElementById('beban_gaji').value)||0;
+ let sewa=parseInt(document.getElementById('beban_sewa').value)||0;
+ let lain=parseInt(document.getElementById('beban_lain').value)||0;
+ let totalPend=pend_jasa+pend_lain;
+ let totalBeban=kulakan+op+gaji+sewa+lain;
+ let labaKotor=totalPend-kulakan;
+ let labaBersih=totalPend-totalBeban;
+ data={...data,pend_jasa,pend_lain,kulakan,op,gaji,sewa,lain,totalPend,totalBeban,labaKotor,labaBersih};save();
+ document.getElementById('omzetPajak').value=totalPend;
+ document.getElementById('hasilLaba').classList.remove('hidden');
+ document.getElementById('hasilLaba').innerHTML=`Total Pendapatan: Rp ${totalPend.toLocaleString()}<br>Total Beban: Rp ${totalBeban.toLocaleString()}<br>Laba Kotor (Pend-HPP): Rp ${labaKotor.toLocaleString()}<br><b>Laba Bersih: Rp ${labaBersih.toLocaleString()}</b><br><br>Margin: ${totalPend?((labaBersih/totalPend)*100).toFixed(1):0}%`;
+};
+
+document.getElementById('btnHitungNeraca').onclick=()=>{
+ let kas=parseInt(document.getElementById('aset_kas').value)||0;
+ let piutang=parseInt(document.getElementById('aset_piutang').value)||0;
+ let persediaan=parseInt(document.getElementById('aset_persediaan').value)||0;
+ let tetap=parseInt(document.getElementById('aset_tetap').value)||0;
+ let hutang=parseInt(document.getElementById('kew_hutang').value)||0;
+ let bank=parseInt(document.getElementById('kew_bank').value)||0;
+ let modal=parseInt(document.getElementById('modal_awal').value)||0;
+ let totalAset=kas+piutang+persediaan+tetap;
+ let totalKewajiban=hutang+bank;
+ let totalPasiva=totalKewajiban+modal+(data.labaBersih||0);
+ let balance=totalAset-totalPasiva;
+ document.getElementById('hasilNeraca').classList.remove('hidden');
+ document.getElementById('hasilNeraca').innerHTML=`Aset: Rp ${totalAset.toLocaleString()} (Kas ${kas.toLocaleString()} + Piutang ${piutang.toLocaleString()} + Persediaan ${persediaan.toLocaleString()} + Tetap ${tetap.toLocaleString()})<br>Kewajiban: Rp ${totalKewajiban.toLocaleString()}<br>Modal + Laba: Rp ${(modal+(data.labaBersih||0)).toLocaleString()}<br>Pasiva: Rp ${totalPasiva.toLocaleString()}<br><br><b>${balance===0?'✅ BALANCE':'❌ SELISIH Rp '+balance.toLocaleString()+' (cek modal/laba)'}</b>`;
+};
+
+document.getElementById('btnHitungPajak').onclick=()=>{
+ let omzet=parseInt(document.getElementById('omzetPajak').value)||data.totalPend||0;
+ let jenis=document.getElementById('jenisPajak').value;
+ let pajak=0, ket='';
+ if(jenis==='umkm05'){pajak=omzet*0.005; ket='PP 23/2018 - Tarif 0.5% dari omzet bruto, untuk wajib pajak dengan omzet <4.8M per tahun. Bayar tiap bulan.'}
+ if(jenis==='umkm11'){pajak=omzet*0.11; ket='PPh Final 11% - estimasi.'}
+ if(jenis==='pribadi'){let ptkp=54000000; let pkp=Math.max(0,(data.labaBersih||omzet)*12-ptkp); if(pkp<=60000000) pajak=pkp*0.05; else if(pkp<=250000000) pajak=60000000*0.05+(pkp-60000000)*0.15; else pajak=60000000*0.05+190000000*0.15+(pkp-250000000)*0.25; ket=`PTKP Rp 54jt, PKP Rp ${pkp.toLocaleString()} setahun`;}
+ if(jenis==='badan'){pajak=(data.labaBersih||0)*0.22; ket='PPh Badan 22% dari laba bersih.'}
+ document.getElementById('hasilPajak').classList.remove('hidden');
+ document.getElementById('hasilPajak').innerHTML=`Omzet: Rp ${omzet.toLocaleString()}<br>Jenis: ${jenis}<br><b>Pajak Terutang: Rp ${pajak.toLocaleString()}</b><br><span class="text-xs text-gray-600">${ket}</span><br><br>Laba Setelah Pajak: Rp ${((data.labaBersih||0)-pajak).toLocaleString()}`;
+};
+
+function copyLaba(){let el=document.getElementById('hasilLaba').innerText; navigator.clipboard.writeText(el).then(()=>alert('Laba Rugi di-copy di bawah'));}
+function copyNeraca(){let el=document.getElementById('hasilNeraca').innerText; navigator.clipboard.writeText(el).then(()=>alert('Neraca di-copy di bawah'));}
+function copyPajak(){let el=document.getElementById('hasilPajak').innerText; navigator.clipboard.writeText(el).then(()=>alert('Pajak di-copy di bawah'));}
+</script>
+</body>
+</html>
